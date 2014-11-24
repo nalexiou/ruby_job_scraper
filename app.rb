@@ -20,8 +20,8 @@ post '/' do
 	#GENERATE REGEX BASED ON USER KEYWORDS
 	keywords_array = params[:keywords].scan(/'.*?'|".*?"|\S+/)
 	keywords_array.map!{|x| x.gsub(/\s+/," ").gsub(/[^\w\s]|_/, "")}
-	keywords_regex = keywords_array.join("|")
-	regex_job_title = /\b(#{keywords_regex})s?\b/i
+	@keywords_regex = keywords_array.join("|")
+	regex_job_title = /\b(#{@keywords_regex})s?\b/i
 	# SETUP ARRAYS
 	nytmurls =[]
 	nojobs = []

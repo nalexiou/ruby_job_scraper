@@ -18,6 +18,5 @@ def getResponse(givenurl, limit = 5)
 	    resp.error!
   	end
   	rescue Exception => e
-  		#p e	
   	end
 end
