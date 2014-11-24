@@ -17,15 +17,7 @@
           </tr>
         </thead>
         <tbody>
-        <% @companies_with_openings.each do |site, positions | %>
-          <tr>
-            <td> 
-            	<a href="<%= site %>" target ="_blank"><%= site %>
-				</a>
-            </td>
-            <td><%= positions.uniq.flatten.sort.join(" ") %>
-          </tr>
-         <% end %>
+           <%= useWorkers(@careerlinksverified, @displayjobs) %>
         </tbody>
       </table>
     </div>
