@@ -17,15 +17,11 @@ end
 # sinatra allows us to respond to route requests with code.  Here we are
 # responding to requests for the root document - the naked domain.
 post '/' do
-
-keywords_array = params[:keywords].scan(/'.*?'|".*?"|\S+/)
-puts keywords_array 
-keywords_array.map!{|x| x.gsub(/\s+/," ").gsub(/[^\w\s]|_/, "")}
-p keywords_regex = keywords_array.join("|")
-
-regex_job_title = /\b(#{keywords_regex})s?\b/i
-
-params[:keywords]
+	#GENERATE REGEX BASED ON USER KEYWORDS
+	keywords_array = params[:keywords].scan(/'.*?'|".*?"|\S+/)
+	keywords_array.map!{|x| x.gsub(/\s+/," ").gsub(/[^\w\s]|_/, "")}
+	keywords_regex = keywords_array.join("|")
+	regex_job_title = /\b(#{keywords_regex})s?\b/i
 	# SETUP ARRAYS
 	nytmurls =[]
 	nojobs = []
@@ -39,7 +35,6 @@ params[:keywords]
 	 (1..lastpage).each do |id|
 
 	  nytmurls << "https://nytm.org/made?list=true&page=#{id}"
-	  #puts "\nGetting #{url}"
 	end
 
 	#SET PROC TO GRAB COMPANY LINKS
@@ -51,8 +46,7 @@ params[:keywords]
 				if y['href'] =~ URI::regexp
 				careerlinksverified << y['href']
 				end
-	    # puts "Success:"
-	       		puts y['href']
+	       		# puts y['href']
 	       	end
 	  else
 	    # puts "\tNot a valid page; response was: #{resp.code}"
@@ -65,7 +59,7 @@ params[:keywords]
 	useWorkers(nytmurls, grabnynytmhiring)
 
 
-	#SET FILTER CRITERIA
+	#SAMPLE FILTER CRITERIA
 	#regex_job_title = /\b(front ?\-?end|developer|automation|engineer|qa)s?\b/i
 
 	#SET PROC TO LOOK FOR JOBS BASED ON CRITERIA
@@ -84,7 +78,7 @@ params[:keywords]
 		end
 
 	  else
-	    puts "\tNot a valid page; response was: #{resp.code} for site: #{url}" 
+	    # puts "\tNot a valid page; response was: #{resp.code} for site: #{url}" 
 	    nojobs << z
 	  end
 
