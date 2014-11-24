@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>Startup Jobs Found</title>
+  <link rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="span8">
+    <!-- This is table layout is pulled directly from twitter bootstrap -->
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Company website</th>
+            <th>Position</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% @companies_with_openings.each do |site, positions | %>
+          <tr>
+            <td> 
+            	<a href="<%= site %>" target ="_blank"><%= site %>
+				</a>
+            </td>
+            <td><%= positions.uniq.flatten.sort.join(" ") %>
+          </tr>
+         <% end %>
+        </tbody>
+      </table>
+    </div>
+</body>
+</html>
