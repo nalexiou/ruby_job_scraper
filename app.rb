@@ -14,20 +14,23 @@ get '/' do
 	erb :form
 end
 
+post '/search' do
+	@keywords = params[:keywords]
+	erb :search
+end
+
 # sinatra allows us to respond to route requests with code.  Here we are
 # responding to requests for the root document - the naked domain.
-post '/' do
+post '/results' do
 	#GENERATE REGEX BASED ON USER KEYWORDS
-	@company = ""
-	@job =""
 	keywords_array = params[:keywords].scan(/'.*?'|".*?"|\S+/)
 	keywords_array.map!{|x| x.gsub(/\s+/," ").gsub(/[^\w\s]|_/, "")}
-	@keywords_regex = keywords_array.join("|")
-	@regex_job_title = /\b(#{@keywords_regex})s?\b/i
+	keywords_regex = keywords_array.join("|")
+	regex_job_title = /\b(#{keywords_regex})s?\b/i
 	# SETUP ARRAYS
 	nytmurls =[]
 	nojobs = []
-	@careerlinksverified = []
+	careerlinksverified = []
 	invalidids = []
 	@companies_with_openings = {}
 
@@ -46,7 +49,7 @@ post '/' do
 	  if resp.code.match(/20\d/)
 			Nokogiri::HTML(resp.body).css("a").select{|x| x.text == "Hiring"}.each do |y|
 				if y['href'] =~ URI::regexp
-				@careerlinksverified << y['href']
+				careerlinksverified << y['href']
 				end
 	       		# puts y['href']
 	       	end
@@ -56,12 +59,10 @@ post '/' do
 	  end
 	end
 
-
 	#GIVE WORKERS SOME WORK!
 
 	useWorkers(nytmurls, grabnynytmhiring)
 
-p @careerlinksverified
 
 	#SAMPLE FILTER CRITERIA
 	#regex_job_title = /\b(front ?\-?end|developer|automation|engineer|qa)s?\b/i
@@ -75,11 +76,8 @@ p @careerlinksverified
 	  # 	s = s.encode("UTF-16be", :invalid=>:replace, :replace=>"?").encode('UTF-8')
 	  # end
 	  if resp.code.match(/(2|3)0\d/)
-	  	if !Nokogiri::HTML(resp.body).text.match(@regex_job_title).nil?
-			@companies_with_openings[z] = Nokogiri::HTML(resp.body).text.downcase.scan(@regex_job_title)
-			@company = z
-			@job = Nokogiri::HTML(resp.body).text.downcase.scan(@regex_job_title)
-			erb :shows
+	  	if !Nokogiri::HTML(resp.body).text.match(regex_job_title).nil?
+			@companies_with_openings[z] = Nokogiri::HTML(resp.body).text.downcase.scan(regex_job_title)
 		else
 			nojobs << z
 		end
@@ -95,13 +93,12 @@ p @careerlinksverified
 	  end
 	 end
 
-
 	 #GIVE WORKERS SOME MORE WORK!
 
-	 useWorkers(@careerlinksverified, grabjobs)
-	 # @companies_with_openings = @companies_with_openings.sort
+	 useWorkers(careerlinksverified, grabjobs)
+	 @companies_with_openings = @companies_with_openings.sort
 	 
 	  # this tells sinatra to render the Embedded Ruby template /views/shows.erb
-	  
+	  erb :shows
 
 end
