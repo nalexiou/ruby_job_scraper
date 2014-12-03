@@ -3,26 +3,20 @@
 <head>
 	<meta charset="UTF-8">
 	<title><%= @keywords_regex %></title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href=" <%= url('/styles.css') %>">
+	<link rel="stylesheet" href=" <%= url('/results.css') %>">
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"> </script>
 	<script type="text/javascript">
 	 $.ajax({type: "POST", url: '/results', data: { keywords: <%= "'#{@keywords}'"%>} }).done(function(data) {
-	 	$("#c").remove();
-	 	$("#results").html(data);
+	 	//$("#c").remove();
+	 	//$("html").html(data);
+	 	var newDoc = document.open("text/html", "replace");
+		newDoc.write(data);
+		newDoc.close();
 	 });
 	</script>
 </head>
 <body>
-<div id='c'>
-  <div class='s'></div>
-  <div class='s'></div>
-  <div class='s'></div>
-  <div class='s'></div>
-  <div class='s'></div>
-  <div class='s'></div>
-</div>
-</div>
-	<div id="results"></div>
+ <div id="c">Searching websites...</div>	
 </body>
 </html>

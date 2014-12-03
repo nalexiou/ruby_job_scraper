@@ -19,6 +19,13 @@ post '/search' do
 	erb :search
 end
 
+get '/results' do
+
+	  @companies_with_openings = @companies_with_openings.sort
+	 erb :shows
+
+end
+
 # sinatra allows us to respond to route requests with code.  Here we are
 # responding to requests for the root document - the naked domain.
 post '/results' do
